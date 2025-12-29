@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'theme/app_theme.dart';
 import 'models/meal.dart';
 import 'widgets/meal_card.dart';
 import 'widgets/empty_state.dart';
-import 'services/auth_service.dart';
+// auth handled by `AuthProvider`
 import 'screens/login_screen.dart';
+import 'providers/auth_provider.dart';
+import 'providers/theme_provider.dart';
+import 'providers/character_provider.dart';
+import 'repositories/character_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(); // Disabled for Mock Mode
-  runApp(const FoodDiaryApp());
+  // await Firebase.initializeApp(); // Optional: enable when configured
+  // Provide an in-memory repository by default (replace with FirestoreCharacterRepository when Firebase enabled)
+  final characterRepo = InMemoryCharacterRepository();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(
+            create: (_) => CharacterProvider(repository: characterRepo)),
+      ],
+      child: const FoodDiaryApp(),
+    ),
+  );
 }
 
 class FoodDiaryApp extends StatelessWidget {
@@ -17,29 +35,18 @@ class FoodDiaryApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
+
     return MaterialApp(
       title: 'Food Diary',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      home: StreamBuilder<bool>(
-        stream: AuthService().authState,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-             // If we don't have a value yet, check if we want to default to login or not.
-             // For mock, let's just show LoginScreen by default if no event yet.
-             // But StreamBuilder starts with waiting. 
-             // We can emit an initial value in AuthService or handle it here.
-             // Let's assume waiting = loading or default to login.
-            return const LoginScreen(); 
-          }
-          if (snapshot.hasData && snapshot.data == true) {
-            return const HomeScreen();
-          }
-          return const LoginScreen();
-        },
-      ),
+      themeMode: themeProvider.mode,
+      home: authProvider.isAuthenticated
+          ? const HomeScreen()
+          : const LoginScreen(),
     );
   }
 }
