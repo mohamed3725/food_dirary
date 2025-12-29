@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'theme/app_theme.dart';
 import 'models/meal.dart';
 import 'widgets/meal_card.dart';
@@ -10,12 +11,23 @@ import 'providers/auth_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/character_provider.dart';
 import 'repositories/character_repository.dart';
+import 'config/firebase_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(); // Optional: enable when configured
-  // Provide an in-memory repository by default (replace with FirestoreCharacterRepository when Firebase enabled)
-  final characterRepo = InMemoryCharacterRepository();
+  // Optionally initialize Firebase and use Firestore repository.
+  CharacterRepository characterRepo;
+  if (FirebaseConfig.useFirestore) {
+    try {
+      await Firebase.initializeApp();
+      characterRepo = FirestoreCharacterRepository();
+    } catch (e) {
+      // If Firebase fails to initialize, fall back to in-memory repo.
+      characterRepo = InMemoryCharacterRepository();
+    }
+  } else {
+    characterRepo = InMemoryCharacterRepository();
+  }
 
   runApp(
     MultiProvider(

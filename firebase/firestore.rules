@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Characters collection: only authenticated users may read/write their own characters
+    match /characters/{characterId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.keys().hasAll(['name', 'createdAt']);
+      allow update: if request.auth != null && request.auth.uid != null;
+      allow delete: if request.auth != null && request.auth.uid != null;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
