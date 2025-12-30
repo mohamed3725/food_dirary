@@ -2,31 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'theme/app_theme.dart';
-import 'models/meal.dart';
-import 'widgets/meal_card.dart';
-import 'widgets/empty_state.dart';
-// auth handled by `AuthProvider`
+import 'firebase_options.dart';
+import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'providers/auth_provider.dart';
 import 'providers/theme_provider.dart';
-import 'providers/character_provider.dart';
-import 'repositories/character_repository.dart';
+import 'providers/meal_provider.dart';
+import 'repositories/meal_repository.dart';
 import 'config/firebase_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Optionally initialize Firebase and use Firestore repository.
-  CharacterRepository characterRepo;
+  // Optionally initialize Firebase and use Firestore repository.
+  MealRepository mealRepo;
   if (FirebaseConfig.useFirestore) {
     try {
-      await Firebase.initializeApp();
-      characterRepo = FirestoreCharacterRepository();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      mealRepo = FirestoreMealRepository();
     } catch (e) {
       // If Firebase fails to initialize, fall back to in-memory repo.
-      characterRepo = InMemoryCharacterRepository();
+      mealRepo = InMemoryMealRepository();
     }
   } else {
-    characterRepo = InMemoryCharacterRepository();
+    mealRepo = InMemoryMealRepository();
   }
 
   runApp(
@@ -35,7 +36,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(
-            create: (_) => CharacterProvider(repository: characterRepo)),
+            create: (_) => MealProvider(repository: mealRepo)),
       ],
       child: const FoodDiaryApp(),
     ),
@@ -63,64 +64,4 @@ class FoodDiaryApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    // Dummy Data for Demo
-    final List<Meal> meals = [
-      Meal(
-        id: '1',
-        name: 'Oatmeal with Berries',
-        description: 'Healthy breakfast with blueberries and honey',
-        createdAt: DateTime.now(),
-        lastModified: DateTime.now(),
-        calories: 350,
-        protein: 12,
-        carbs: 60,
-        fat: 6,
-      ),
-      Meal(
-        id: '2',
-        name: 'Grilled Chicken Salad',
-        createdAt: DateTime.now(),
-        lastModified: DateTime.now(),
-        calories: 450,
-        protein: 40,
-        carbs: 10,
-        fat: 20,
-      ),
-    ];
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Food Diary'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: meals.isEmpty
-          ? const EmptyState()
-          : ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: meals.length,
-              itemBuilder: (context, index) {
-                return MealCard(
-                  meal: meals[index],
-                  onTap: () {
-                    // Navigate to details
-                  },
-                );
-              },
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}

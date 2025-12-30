@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "172919484278",
+    "project_id": "food-dirary2",
+    "storage_bucket": "food-dirary2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172919484278:android:f1e3f85f5381d2ae799457",
+        "android_client_info": {
+          "package_name": "com.example.food_dirary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbaQepywzMcZlYw3AoBG2ZBZ2pQ1j8HWQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172919484278:android:ae22c5def5f95b5b799457",
+        "android_client_info": {
+          "package_name": "com.example.food_dirary1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbaQepywzMcZlYw3AoBG2ZBZ2pQ1j8HWQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

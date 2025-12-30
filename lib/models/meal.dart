@@ -38,6 +38,7 @@ class Meal {
     };
   }
 
+
   factory Meal.fromMap(Map<String, dynamic> map, String documentId) {
     return Meal(
       id: documentId,

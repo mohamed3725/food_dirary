@@ -1,0 +1,30 @@
+type User @table {
+  displayName: String!
+  createdAt: Timestamp!
+  email: String
+  photoUrl: String
+}
+
+type Meal @table {
+  user: User!
+  mealName: String!
+  mealTime: Timestamp!
+  createdAt: Timestamp!
+  notes: String
+}
+
+type FoodItem @table {
+  foodName: String!
+  calories: Float!
+  protein: Float!
+  carbohydrates: Float!
+  fat: Float!
+  servingSize: Float
+  unit: String
+}
+
+type MealEntry @table(key: ["meal", "foodItem"]) {
+  meal: Meal!
+  foodItem: FoodItem!
+  quantity: Float!
+}
