@@ -1,33 +1,63 @@
-import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  // Mock Stream - broadcast to allow multiple listeners if needed
-  static final StreamController<bool> _authController = StreamController<bool>.broadcast();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   // Stream of auth changes
-  Stream<bool> get authState => _authController.stream;
+  Stream<bool> get authState => _firebaseAuth.authStateChanges().map((User? user) => user != null);
+
+  User? get currentUser => _firebaseAuth.currentUser;
 
   // Sign in with Email and Password
   Future<void> signInWithEmailAndPassword(String email, String password) async {
-    // Mock login delay
-    await Future.delayed(const Duration(seconds: 1));
-    if (password == '123456') { // Simple mock validation
-      _authController.add(true); // Emit logged in
-      return;
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthError(e);
+    } catch (e) {
+      throw 'An error occurred during login.';
     }
-    throw 'Invalid credentials (use password: 123456)';
   }
 
   // Register with Email and Password
   Future<void> registerWithEmailAndPassword(String email, String password) async {
-    await Future.delayed(const Duration(seconds: 1));
-    _authController.add(true); // Emit logged in
+    try {
+      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthError(e);
+    } catch (e) {
+      throw 'An error occurred during registration.';
+    }
   }
 
   // Sign Out
   Future<void> signOut() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    _authController.add(false); // Emit logged out
+    await _firebaseAuth.signOut();
+  }
+
+  // Helper for error messages
+  String _handleAuthError(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'user-not-found':
+        return 'No user found with this email.';
+      case 'wrong-password':
+        return 'Wrong password provided.';
+      case 'email-already-in-use':
+        return 'The email is already in use by another account.';
+      case 'invalid-email':
+        return 'The email address is not valid.';
+      case 'weak-password':
+        return 'The password is too weak.';
+      case 'network-request-failed':
+        return 'Connection failed: Please check your internet connection and try again.';
+      case 'too-many-requests':
+        return 'Too many login attempts. Please try again later.';
+      default:
+        if (e.message != null && (e.message!.contains('network') || e.message!.contains('unreachable'))) {
+          return 'Network error: Please check your connection.';
+        }
+        return 'Authentication failed: ${e.message}';
+    }
   }
 }
 

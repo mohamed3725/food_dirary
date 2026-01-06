@@ -10,9 +10,19 @@ import 'providers/theme_provider.dart';
 import 'providers/meal_provider.dart';
 import 'repositories/meal_repository.dart';
 import 'config/firebase_config.dart';
+import 'services/notification_service.dart';
+import 'providers/connectivity_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Notification Service
+  try {
+    final notificationService = NotificationService();
+    await notificationService.initialize().timeout(const Duration(seconds: 5));
+  } catch (e) {
+    debugPrint('Notification initialization failed: $e');
+  }
   // Optionally initialize Firebase and use Firestore repository.
   // Optionally initialize Firebase and use Firestore repository.
   MealRepository mealRepo;
@@ -35,6 +45,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
         ChangeNotifierProvider(
             create: (_) => MealProvider(repository: mealRepo)),
       ],

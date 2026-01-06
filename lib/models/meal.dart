@@ -3,6 +3,7 @@ class Meal {
   final String name;
   final String? description;
   final String? image;
+  final String? localImagePath;
   final DateTime createdAt;
   final DateTime lastModified;
   final int calories;
@@ -15,6 +16,7 @@ class Meal {
     required this.name,
     this.description,
     this.image,
+    this.localImagePath,
     required this.createdAt,
     required this.lastModified,
     required this.calories,
@@ -29,6 +31,7 @@ class Meal {
       'name': name,
       'description': description,
       'image': image,
+      'localImagePath': localImagePath,
       'createdAt': createdAt.toIso8601String(),
       'lastModified': lastModified.toIso8601String(),
       'calories': calories,
@@ -45,6 +48,7 @@ class Meal {
       name: map['name'] ?? '',
       description: map['description'],
       image: map['image'],
+      localImagePath: map['localImagePath'],
       createdAt: map['createdAt'] != null 
           ? DateTime.parse(map['createdAt']) 
           : DateTime.now(),
