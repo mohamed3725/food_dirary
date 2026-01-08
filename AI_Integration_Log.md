@@ -31,6 +31,12 @@ This document outlines the usage of AI (Antigravity) during the development of t
     - **Persistence**: Suggested and implemented local image caching using `path_provider` so images remain visible immediately while uploading.
     - **Network Errors**: Improved `AuthService` to catch specifically `network-request-failed` and provided clear UI feedback on `LoginScreen` via `ConnectivityProvider`.
 
+### 6. Code Documentation & Localization
+- **Prompt**: "Add Arabic comments describing everything in the Meal class."
+- **Effectiveness**: Highly effective.
+    - **Localization**: AI automatically translated technical terms into accurate Arabic descriptions (e.g., Constructor -> الْمُنشئ).
+    - **Documentation**: Added comprehensive Javadoc-style comments to every field and method, improving code maintainability for Arabic-speaking developers.
+
 ## Challenges with AI Assistance
 - **State Consistency**: Occasionally, AI suggestions for "Optimistic UI" required careful manual review to ensure error handling didn't leave the UI in an inconsistent state.
 - **Dependency Versions**: AI initially suggested older versions of some packages; I manually updated `pubspec.yaml` to the latest versions for compatibility.
