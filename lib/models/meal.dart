@@ -1,3 +1,5 @@
+/// تمثل هذه الفئة بيانات الوجبة الغذائية في التطبيق
+/// تحتوي على (الاسم، الوصف، الصورة، القيم الغذائية، وتواريخ الإنشاء/التعديل)
 class Meal {
   final String id;
   final String name;
@@ -11,6 +13,7 @@ class Meal {
   final double carbs;
   final double fat;
 
+  /// المُنشئ (Constructor) الأساسي لإنشاء كائن الوجبة
   Meal({
     required this.id,
     required this.name,
@@ -25,6 +28,8 @@ class Meal {
     required this.fat,
   });
 
+  /// تحويل كائن الوجبة إلى هيكل بيانات (Map)
+  /// يُستخدم هذا التنسيق عند إرسال البيانات إلى Firebase
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -42,6 +47,8 @@ class Meal {
   }
 
 
+  /// إنشاء كائن وجبة جديد بناءً على البيانات القادمة من Firebase (Map)
+  /// يأخذ البيانات (map) والمعرف الخاص بالمستند (documentId)
   factory Meal.fromMap(Map<String, dynamic> map, String documentId) {
     return Meal(
       id: documentId,

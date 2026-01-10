@@ -8,6 +8,8 @@ import '../services/notification_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
+/// مزود البيانات (Provider) لإدارة حالة الوجبات في التطبيق
+/// يربط بين واجهة المستخدم (UI) ومستودع البيانات (Repository)
 class MealProvider extends ChangeNotifier {
   final MealRepository repository;
   final NotificationService _notificationService = NotificationService();
@@ -21,6 +23,7 @@ class MealProvider extends ChangeNotifier {
   List<Meal> get meals => _meals;
   bool get loading => _loading;
 
+  /// الاشتراك في Stream الوجبات لتحديث القائمة تلقائيًا عند حدوث تغييرات
   void _subscribe() {
     repository.streamMeals().listen((list) {
       _meals = list;
@@ -28,6 +31,8 @@ class MealProvider extends ChangeNotifier {
     });
   }
 
+  /// إضافة وجبة جديدة
+  /// يقوم بحفظ البيانات، تخزين الصورة محليًا (للسرعة)، ثم رفع الصورة للخادم في الخلفية
   Future<void> add(Meal m, {Uint8List? imageBytes, String? fileName, String? webPath}) async {
     try {
       final docId = await repository.addMeal(m);
@@ -71,6 +76,7 @@ class MealProvider extends ChangeNotifier {
     }
   }
 
+  /// تحديث بيانات وجبة موجودة وتحديث الصورة إذا وجدت
   Future<void> update(Meal m, {Uint8List? imageBytes, String? fileName, String? webPath}) async {
     try {
       String? currentLocalPath = m.localImagePath;
@@ -108,6 +114,8 @@ class MealProvider extends ChangeNotifier {
     }
   }
 
+  /// عملية رفع الصورة في الخلفية (Background Upload)
+  /// تضمن عدم توقف واجهة التطبيق أثناء الرفع
   Future<void> _uploadInBackground(String docId, Meal originalMeal, Uint8List bytes, String fileName) async {
     try {
       debugPrint('Starting background upload for meal $docId...');
@@ -138,6 +146,7 @@ class MealProvider extends ChangeNotifier {
     }
   }
 
+  /// حذف وجبة
   Future<void> remove(String id) async {
     try {
       await repository.deleteMeal(id);

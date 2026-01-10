@@ -9,6 +9,8 @@ import '../widgets/empty_state.dart';
 import 'add_edit_meal_screen.dart';
 import '../providers/connectivity_provider.dart';
 
+/// الشاشة الرئيسية للتطبيق
+/// تعرض قائمة بالأطعمة المسجلة وتوفر إمكانية البحث والإضافة
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -33,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final allMeals = mealProvider.meals;
     
     // Filter meals based on search query
+    /// تصفية الوجبات المعروضة بناءً على نص البحث المدخل
     final filteredMeals = allMeals.where((meal) {
       return meal.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           (meal.description?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
@@ -107,52 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Provider.of<ThemeProvider>(context, listen: false).toggle();
               },
             ),
-            // const Divider(),
-            // ListTile(
-            //   leading: const Icon(Icons.file_upload),
-            //   title: const Text('Export Data (JSON)'),
-            //   onTap: () async {
-            //     Navigator.pop(context); // Close drawer
-            //     final service = ImportExportService();
-            //     try {
-            //       await service.exportMeals(allMeals);
-            //       if (mounted) {
-            //         ScaffoldMessenger.of(context).showSnackBar(
-            //           const SnackBar(content: Text('Export successful!')),
-            //         );
-            //       }
-            //     } catch (e) {
-            //       if (mounted) {
-            //         ScaffoldMessenger.of(context).showSnackBar(
-            //           SnackBar(content: Text('Export failed: $e')),
-            //         );
-            //       }
-            //     }
-            //   },
-            // ),
-            // ListTile(
-            //   leading: const Icon(Icons.file_download),
-            //   title: const Text('Import Data (JSON)'),
-            //   onTap: () async {
-            //     Navigator.pop(context); // Close drawer
-            //     final service = ImportExportService();
-            //     try {
-            //       final importedMeals = await service.importMeals();
-            //       if (importedMeals.isNotEmpty && mounted) {
-            //         await mealProvider.addAll(importedMeals);
-            //         ScaffoldMessenger.of(context).showSnackBar(
-            //           const SnackBar(content: Text('Import successful!')),
-            //         );
-            //       }
-            //     } catch (e) {
-            //       if (mounted) {
-            //         ScaffoldMessenger.of(context).showSnackBar(
-            //           SnackBar(content: Text('Import failed: $e')),
-            //         );
-            //       }
-            //     }
-            //   },
-            // ),
+         //
             const Spacer(),
             const Divider(),
             ListTile(

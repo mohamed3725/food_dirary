@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
-  // Primary seed used to generate Material 3 color schemes
+  /// اللون الأساسي (Seed Color) لتوليد لوحة ألوان Material 3
   static const Color seed = Color(0xFF009688); // Teal 500
+  /// اللون الثانوي (للأزرار العائمة والتمييز)
   static const Color secondary = Color(0xFFFF7043); // Deep Orange 400 (Coral-like)
 
-  // Accent / semantic colors (tokens)
+  /// ألوان دلالية للحالات المختلفة (نجاح، تحذير، خطر)
   static const Color success = Color(0xFF66BB6A);
   static const Color warning = Color(0xFFFFA726);
   static const Color danger = Color(0xFFEF5350);
 }
 
 class AppTheme {
-  // Typography
+  /// بناء نمط النصوص باستخدام خط Outfit من Google Fonts
   static TextTheme _buildTextTheme(TextTheme base) {
     return GoogleFonts.outfitTextTheme(base).apply(
       bodyColor: Colors.black87,
@@ -29,7 +30,7 @@ class AppTheme {
     scrolledUnderElevation: 0,
   );
 
-  // Light Theme
+  /// إعدادات الثيم الفاتح (Light Mode)
   static ThemeData get lightTheme {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: AppColors.seed,
@@ -86,7 +87,7 @@ class AppTheme {
     );
   }
 
-  // Dark Theme
+  /// إعدادات الثيم الداكن (Dark Mode)
   static ThemeData get darkTheme {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: AppColors.seed,

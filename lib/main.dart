@@ -13,18 +13,21 @@ import 'config/firebase_config.dart';
 import 'services/notification_service.dart';
 import 'providers/connectivity_provider.dart';
 
+/// الدالة الرئيسية (Main Entry Point) للتطبيق
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize Notification Service
+  /// تهيئة خدمة الإشعارات
   try {
     final notificationService = NotificationService();
     await notificationService.initialize().timeout(const Duration(seconds: 5));
   } catch (e) {
     debugPrint('Notification initialization failed: $e');
   }
-  // Optionally initialize Firebase and use Firestore repository.
-  // Optionally initialize Firebase and use Firestore repository.
+  
+  /// تحديد نوع مستودع البيانات (MealRepository)
+  /// إذا كان استخدام Firestore مفعلًا، سيتم الاتصال بـ Firebase
+  /// وإلا سيتم استخدام ذاكرة مؤقتة (InMemory) للتجربة المحلية
   MealRepository mealRepo;
   if (FirebaseConfig.useFirestore) {
     try {
@@ -54,6 +57,7 @@ void main() async {
   );
 }
 
+/// الودجت الجذرية (Root Widget) تشمل إعداد المزودات (Providers) والثيم
 class FoodDiaryApp extends StatelessWidget {
   const FoodDiaryApp({super.key});
 

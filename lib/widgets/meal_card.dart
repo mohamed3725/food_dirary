@@ -13,24 +13,22 @@ class MealCard extends StatelessWidget {
   const MealCard({super.key, required this.meal, this.onTap});
 
   void _shareMeal() {
-    final text = '''
-Check out my meal on Food Diary! 🥗
-Meal: ${meal.name}
-${meal.description != null && meal.description!.isNotEmpty ? 'About: ${meal.description}\n' : ''}
-Nutrition Facts:
-🔥 Calories: ${meal.calories} kcal
-💪 Protein: ${meal.protein}g
-🍞 Carbs: ${meal.carbs}g
-🥑 Fat: ${meal.fat}g
-
-Track your journey with Food Diary!
-''';
+    final text = 'Check out my meal on Food Diary! 🥗\n'
+        'Meal: ${meal.name}\n'
+        '${meal.description?.isNotEmpty == true ? 'About: ${meal.description}\n' : ''}'
+        'Nutrition Facts:\n'
+        '🔥 Calories: ${meal.calories} kcal\n'
+        '💪 Protein: ${meal.protein}g\n'
+        '🍞 Carbs: ${meal.carbs}g\n'
+        '🥑 Fat: ${meal.fat}g\n\n'
+        'Track your journey with Food Diary!';
     Share.share(text, subject: 'My Meal: ${meal.name}');
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(24),
@@ -42,7 +40,6 @@ Track your journey with Food Diary!
           ),
         ],
       ),
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -51,146 +48,15 @@ Track your journey with Food Diary!
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (meal.image != null && meal.image!.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: kIsWeb
-                            ? ((meal.image != null && meal.image!.isNotEmpty) || (meal.localImagePath != null))
-                                ? Image.network(
-                                    meal.image ?? meal.localImagePath!,
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) => Container(
-                                      width: 80,
-                                      height: 80,
-                                      color: Colors.grey[200],
-                                      child: const Icon(Icons.error_outline),
-                                    ),
-                                  )
-                                : Container(
-                                    width: 80,
-                                    height: 80,
-                                    color: Colors.grey[200],
-                                    child: const Icon(Icons.image_outlined),
-                                  )
-                            : ((meal.image != null && meal.image!.isNotEmpty) || (meal.localImagePath != null))
-                                ? (meal.image != null && meal.image!.isNotEmpty)
-                                    ? CachedNetworkImage(
-                                        imageUrl: meal.image!,
-                                        width: 80,
-                                        height: 80,
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) => Container(
-                                          width: 80,
-                                          height: 80,
-                                          color: Colors.grey[200],
-                                          child: const Icon(Icons.image_outlined),
-                                        ),
-                                        errorWidget: (context, url, error) => meal.localImagePath != null
-                                            ? Image.file(
-                                                File(meal.localImagePath!),
-                                                width: 80,
-                                                height: 80,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : Container(
-                                                width: 80,
-                                                height: 80,
-                                                color: Colors.grey[200],
-                                                child: const Icon(Icons.error_outline),
-                                              ),
-                                      )
-                                    : Image.file(
-                                        File(meal.localImagePath!),
-                                        width: 80,
-                                        height: 80,
-                                        fit: BoxFit.cover,
-                                      )
-                                : Container(
-                                    width: 80,
-                                    height: 80,
-                                    color: Colors.grey[200],
-                                    child: const Icon(Icons.image_outlined),
-                                  )
-                        ),
-                      )
-                    else if (meal.localImagePath != null && !kIsWeb)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.file(
-                            File(meal.localImagePath!),
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            meal.name,
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          if (meal.description != null &&
-                              meal.description!.isNotEmpty) ...[
-                            const SizedBox(height: 6),
-                            Text(
-                              meal.description!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    color: Colors.grey[600],
-                                    height: 1.4,
-                                  ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
+                    _buildMealImage(),
+                    const SizedBox(width: 16),
+                    Expanded(child: _buildMealInfo(context)),
                     const SizedBox(width: 12),
-                    Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primaryContainer,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.restaurant_menu,
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        IconButton(
-                          icon: Icon(
-                            Icons.share_outlined,
-                            size: 20,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          onPressed: _shareMeal,
-                          tooltip: 'Share Meal',
-                        ),
-                      ],
-                    ),
+                    _buildActions(context),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -205,6 +71,111 @@ Track your journey with Food Diary!
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMealImage() {
+    final hasNetworkImage = meal.image != null && meal.image!.isNotEmpty;
+    final hasLocalImage = meal.localImagePath != null && meal.localImagePath!.isNotEmpty;
+
+    if (!hasNetworkImage && !hasLocalImage) {
+      return _buildImagePlaceholder();
+    }
+
+    Widget imageWidget;
+    if (kIsWeb) {
+      imageWidget = Image.network(
+        meal.image ?? meal.localImagePath!,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _buildImagePlaceholder(isError: true),
+      );
+    } else if (hasNetworkImage) {
+      imageWidget = CachedNetworkImage(
+        imageUrl: meal.image!,
+        fit: BoxFit.cover,
+        placeholder: (_, __) => _buildImagePlaceholder(),
+        errorWidget: (_, __, ___) => hasLocalImage
+            ? Image.file(File(meal.localImagePath!), fit: BoxFit.cover)
+            : _buildImagePlaceholder(isError: true),
+      );
+    } else {
+      imageWidget = Image.file(File(meal.localImagePath!), fit: BoxFit.cover);
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: SizedBox(
+        width: 80,
+        height: 80,
+        child: imageWidget,
+      ),
+    );
+  }
+
+  Widget _buildImagePlaceholder({bool isError = false}) {
+    return Container(
+      width: 80,
+      height: 80,
+      color: Colors.grey[200],
+      child: Icon(
+        isError ? Icons.error_outline : Icons.image_outlined,
+        color: Colors.grey[400],
+      ),
+    );
+  }
+
+  Widget _buildMealInfo(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          meal.name,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        if (meal.description?.isNotEmpty == true) ...[
+          const SizedBox(height: 6),
+          Text(
+            meal.description!,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.grey[600],
+                  height: 1.4,
+                ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildActions(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.restaurant_menu,
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+            size: 20,
+          ),
+        ),
+        const SizedBox(height: 8),
+        IconButton(
+          onPressed: _shareMeal,
+          icon: Icon(
+            Icons.share_outlined,
+            size: 20,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          tooltip: 'Share Meal',
+        ),
+      ],
     );
   }
 }
