@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
+// استخدمنا ستيت مانجمن نوعها بروفيدر عشان نهندل السستم
+
+// هذا الملف لي يتعامل مع حالات ال auth لي يخليك تخش او لا للبرنامج
+
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService;
   bool _isAuthenticated = false;

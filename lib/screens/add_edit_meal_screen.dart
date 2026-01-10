@@ -75,22 +75,27 @@ class _AddEditMealScreenState extends State<AddEditMealScreen> {
   void _saveForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      
+
       setState(() {
         _isLoading = true;
       });
 
       final provider = Provider.of<MealProvider>(context, listen: false);
-      final connectivity = Provider.of<ConnectivityProvider>(context, listen: false);
+      final connectivity =
+          Provider.of<ConnectivityProvider>(context, listen: false);
 
       try {
-        final Uint8List? bytes = _imageFile != null ? await _imageFile!.readAsBytes() : null;
-        final String? fileName = _imageFile != null ? 'meal_${DateTime.now().millisecondsSinceEpoch}.jpg' : null;
+        final Uint8List? bytes =
+            _imageFile != null ? await _imageFile!.readAsBytes() : null;
+        final String? fileName = _imageFile != null
+            ? 'meal_${DateTime.now().millisecondsSinceEpoch}.jpg'
+            : null;
 
         if (bytes != null && connectivity.isOffline) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Offline: Image will upload once you are back online.'),
+              content:
+                  Text('Offline: Image will upload once you are back online.'),
               backgroundColor: Colors.orange,
             ),
           );
@@ -102,7 +107,8 @@ class _AddEditMealScreenState extends State<AddEditMealScreen> {
             id: widget.meal!.id,
             name: _name,
             description: _description,
-            image: _imageUrl, // Keep old URL for now, background update will replace it
+            image:
+                _imageUrl, // Keep old URL for now, background update will replace it
             localImagePath: _localImagePath,
             createdAt: widget.meal!.createdAt,
             lastModified: DateTime.now(),
@@ -111,18 +117,19 @@ class _AddEditMealScreenState extends State<AddEditMealScreen> {
             carbs: _carbs,
             fat: _fat,
           );
-          provider.update(updatedMeal, 
-            imageBytes: bytes, 
+          provider.update(
+            updatedMeal,
+            imageBytes: bytes,
             fileName: fileName,
             webPath: _imageFile?.path,
           );
         } else {
           // Create
           final newMeal = Meal(
-            id: '', 
+            id: '',
             name: _name,
             description: _description,
-            image: null, 
+            image: null,
             createdAt: DateTime.now(),
             lastModified: DateTime.now(),
             calories: _calories,
@@ -130,22 +137,25 @@ class _AddEditMealScreenState extends State<AddEditMealScreen> {
             carbs: _carbs,
             fat: _fat,
           );
-          provider.add(newMeal, 
-            imageBytes: bytes, 
+          provider.add(
+            newMeal,
+            imageBytes: bytes,
             fileName: fileName,
             webPath: _imageFile?.path,
           );
         }
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(widget.meal != null ? 'Meal updated! ✅' : 'Meal added! 🥗'),
+              content: Text(
+                  widget.meal != null ? 'Meal updated! ✅' : 'Meal added! 🥗'),
               behavior: SnackBarBehavior.floating,
             ),
           );
           Navigator.of(context).pop();
         }
+        
       } catch (e) {
         setState(() {
           _isLoading = false;
@@ -155,7 +165,7 @@ class _AddEditMealScreenState extends State<AddEditMealScreen> {
             SnackBar(content: Text('Error saving meal: $e')),
           );
         }
-      } 
+      }
     }
   }
 
@@ -181,7 +191,8 @@ class _AddEditMealScreenState extends State<AddEditMealScreen> {
                         onPressed: () => Navigator.of(ctx).pop(false),
                       ),
                       TextButton(
-                        child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                        child: const Text('Delete',
+                            style: TextStyle(color: Colors.red)),
                         onPressed: () => Navigator.of(ctx).pop(true),
                       ),
                     ],
@@ -221,65 +232,102 @@ class _AddEditMealScreenState extends State<AddEditMealScreen> {
                               color: Colors.grey[200],
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.2),
                               ),
                             ),
                             child: _imageFile != null
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
-                                    child: kIsWeb 
-                                      ? Image.network(_imageFile!.path, fit: BoxFit.cover)
-                                      : Image.file(File(_imageFile!.path), fit: BoxFit.cover),
+                                    child: kIsWeb
+                                        ? Image.network(_imageFile!.path,
+                                            fit: BoxFit.cover)
+                                        : Image.file(File(_imageFile!.path),
+                                            fit: BoxFit.cover),
                                   )
                                 : _imageUrl != null && _imageUrl!.isNotEmpty
-                                      ? ClipRRect(
-                                          borderRadius: BorderRadius.circular(16),
-                                          child: CachedNetworkImage(
-                                            imageUrl: _imageUrl!,
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) => const Center(
-                                              child: CircularProgressIndicator(),
-                                            ),
-                                            errorWidget: (context, url, error) => _localImagePath != null
-                                                ? (kIsWeb 
-                                                    ? Image.network(_localImagePath!, fit: BoxFit.cover)
-                                                    : Image.file(File(_localImagePath!), fit: BoxFit.cover))
-                                                : const Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Icon(Icons.broken_image_outlined, size: 40, color: Colors.grey),
-                                                      Text('Image failed to load', style: TextStyle(color: Colors.grey)),
-                                                    ],
-                                                  ),
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: CachedNetworkImage(
+                                          imageUrl: _imageUrl!,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) =>
+                                              const Center(
+                                            child: CircularProgressIndicator(),
                                           ),
-                                        )
-                                      : _localImagePath != null
-                                          ? ClipRRect(
-                                              borderRadius: BorderRadius.circular(16),
-                                              child: kIsWeb
-                                                  ? Image.network(_localImagePath!, fit: BoxFit.cover)
-                                                  : Image.file(File(_localImagePath!), fit: BoxFit.cover),
-                                            )
-                                          : Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.add_a_photo_outlined,
-                                              size: 40, color: Theme.of(context).colorScheme.primary),
-                                          const SizedBox(height: 8),
-                                          Text('Add Meal Image',
-                                              style: TextStyle(color: Theme.of(context).colorScheme.primary)),
-                                        ],
-                                      ),
+                                          errorWidget: (context, url, error) =>
+                                              _localImagePath != null
+                                                  ? (kIsWeb
+                                                      ? Image.network(
+                                                          _localImagePath!,
+                                                          fit: BoxFit.cover)
+                                                      : Image.file(
+                                                          File(
+                                                              _localImagePath!),
+                                                          fit: BoxFit.cover))
+                                                  : const Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(
+                                                            Icons
+                                                                .broken_image_outlined,
+                                                            size: 40,
+                                                            color: Colors.grey),
+                                                        Text(
+                                                            'Image failed to load',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .grey)),
+                                                      ],
+                                                    ),
+                                        ),
+                                      )
+                                    : _localImagePath != null
+                                        ? ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            child: kIsWeb
+                                                ? Image.network(
+                                                    _localImagePath!,
+                                                    fit: BoxFit.cover)
+                                                : Image.file(
+                                                    File(_localImagePath!),
+                                                    fit: BoxFit.cover),
+                                          )
+                                        : Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.add_a_photo_outlined,
+                                                  size: 40,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                              const SizedBox(height: 8),
+                                              Text('Add Meal Image',
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary)),
+                                            ],
+                                          ),
                           ),
                         ),
-                        if (_imageFile != null || (_imageUrl != null && _imageUrl!.isNotEmpty) || _localImagePath != null)
+                        if (_imageFile != null ||
+                            (_imageUrl != null && _imageUrl!.isNotEmpty) ||
+                            _localImagePath != null)
                           Positioned(
                             top: 8,
                             right: 8,
                             child: CircleAvatar(
                               backgroundColor: Colors.black54,
                               child: IconButton(
-                                icon: const Icon(Icons.close, color: Colors.white),
+                                icon: const Icon(Icons.close,
+                                    color: Colors.white),
                                 onPressed: () {
                                   setState(() {
                                     _imageFile = null;

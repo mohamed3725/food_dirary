@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:food_diary/models/meal.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/meal_provider.dart';
 import '../providers/theme_provider.dart';
-import '../services/import_export_service.dart';
 import '../widgets/meal_card.dart';
 import '../widgets/empty_state.dart';
 import 'add_edit_meal_screen.dart';
@@ -78,119 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            Consumer<AuthProvider>(
-              builder: (context, authProvider, _) => UserAccountsDrawerHeader(
-                accountName: Text(authProvider.userName),
-                accountEmail: Text(authProvider.userEmail),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                  child: Text(
-                    authProvider.userName.isNotEmpty ? authProvider.userName[0] : 'U',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(
-                Theme.of(context).brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode,
-              ),
-              title: Text(Theme.of(context).brightness == Brightness.dark ? 'Light Mode' : 'Dark Mode'),
-              onTap: () {
-                Provider.of<ThemeProvider>(context, listen: false).toggle();
-              },
-            ),
-         //
-            const Spacer(),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text('Logout', style: TextStyle(color: Colors.red)),
-              onTap: () {
-                Provider.of<AuthProvider>(context, listen: false).signOut();
-              },
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          Consumer<ConnectivityProvider>(
-            builder: (context, conn, _) {
-              if (!conn.isOffline) return const SizedBox.shrink();
-              return Container(
-                width: double.infinity,
-                color: Colors.orange[800],
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.wifi_off, color: Colors.white, size: 16),
-                    SizedBox(width: 8),
-                    Text(
-                      'You are offline. Changes will sync later.',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          Expanded(
-            child: mealProvider.loading
-                ? const Center(child: CircularProgressIndicator())
-                : filteredMeals.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const EmptyState(),
-                            if (_searchQuery.isNotEmpty) ...[
-                              const SizedBox(height: 16),
-                              Text(
-                                'No results for "$_searchQuery"',
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                            ],
-                          ],
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                          left: 16,
-                          right: 16,
-                          bottom: 100,
-                        ),
-                        itemCount: filteredMeals.length,
-                        itemBuilder: (context, index) {
-                          return MealCard(
-                            meal: filteredMeals[index],
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddEditMealScreen(meal: filteredMeals[index]),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-          ),
-        ],
-      ),
+      drawer: CustomDrawer(),
+      body: HomeViewBody(mealProvider, filteredMeals),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.of(context).push(
@@ -201,6 +90,132 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         icon: const Icon(Icons.add),
         label: const Text('Add Meal'),
+      ),
+    );
+  }
+
+  Column HomeViewBody(MealProvider mealProvider, List<Meal> filteredMeals) {
+    return Column(
+      children: [
+        Consumer<ConnectivityProvider>(
+          builder: (context, conn, _) {
+            if (!conn.isOffline) return const SizedBox.shrink();
+            return Container(
+              width: double.infinity,
+              color: Colors.orange[800],
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.wifi_off, color: Colors.white, size: 16),
+                  SizedBox(width: 8),
+                  Text(
+                    'You are offline. Changes will sync later.',
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        Expanded(
+          child: mealProvider.loading
+              ? const Center(child: CircularProgressIndicator())
+              : filteredMeals.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const EmptyState(),
+                          if (_searchQuery.isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            Text(
+                              'No results for "$_searchQuery"',
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
+                          ],
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.only(
+                        top: 16,
+                        left: 16,
+                        right: 16,
+                        bottom: 100,
+                      ),
+                      itemCount: filteredMeals.length,
+                      itemBuilder: (context, index) {
+                        return MealCard(
+                          meal: filteredMeals[index],
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AddEditMealScreen(meal: filteredMeals[index]),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+        ),
+      ],
+    );
+  }
+}
+
+class CustomDrawer extends StatelessWidget {
+  const CustomDrawer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, _) => UserAccountsDrawerHeader(
+              accountName: Text(authProvider.userName),
+              accountEmail: Text(authProvider.userEmail),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                child: Text(
+                  authProvider.userName.isNotEmpty ? authProvider.userName[0] : 'U',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(
+              Theme.of(context).brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode,
+            ),
+            title: Text(Theme.of(context).brightness == Brightness.dark ? 'Light Mode' : 'Dark Mode'),
+            onTap: () {
+              Provider.of<ThemeProvider>(context, listen: false).toggle();
+            },
+          ),
+       //
+          const Spacer(),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text('Logout', style: TextStyle(color: Colors.red)),
+            onTap: () {
+              Provider.of<AuthProvider>(context, listen: false).signOut();
+            },
+          ),
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }

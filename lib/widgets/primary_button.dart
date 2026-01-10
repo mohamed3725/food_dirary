@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// هذا ui متاع البطمه درناها في ويدجت ونستدعوها في كل صفحه 
+
 class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;

@@ -18,6 +18,7 @@ class AuthService {
       throw 'An error occurred during login.';
     }
   }
+  
 
   // Register with Email and Password
   Future<void> registerWithEmailAndPassword(String email, String password) async {

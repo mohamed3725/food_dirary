@@ -8,6 +8,8 @@ import '../services/notification_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
+// لي يتعامل مع الوجبات 
+
 /// مزود البيانات (Provider) لإدارة حالة الوجبات في التطبيق
 /// يربط بين واجهة المستخدم (UI) ومستودع البيانات (Repository)
 class MealProvider extends ChangeNotifier {

@@ -2,6 +2,10 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
+  // هذا ملفات لي يتعامل مع حالات اتصال النت لي يخليك اتعامل مع الباكند حتى لو مفش نت
+  // الملف هذا يحدد فيه نت او لا ويدير ابديت لما يقعد في نت
+
+
 class ConnectivityProvider extends ChangeNotifier {
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<List<ConnectivityResult>> _subscription;
@@ -30,6 +34,7 @@ class ConnectivityProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
 
   @override
   void dispose() {

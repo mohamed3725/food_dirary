@@ -14,19 +14,23 @@ class ThemeProvider extends ChangeNotifier {
     _mode = ThemeMode.light;
     notifyListeners();
   }
+  // يطبق ال لايت
 
   void setDark() {
     _mode = ThemeMode.dark;
     notifyListeners();
   }
+  // يطبق الدارك 
 
   void setSystem() {
     _mode = ThemeMode.system;
     notifyListeners();
   }
+  // يحدد الحاله الافتراضية
 
   void toggle() {
     _mode = _mode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
     notifyListeners();
   }
+  // يبدل الحاله لي قاعده
 }

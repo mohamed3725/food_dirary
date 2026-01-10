@@ -16,7 +16,7 @@ import 'providers/connectivity_provider.dart';
 /// الدالة الرئيسية (Main Entry Point) للتطبيق
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   /// تهيئة خدمة الإشعارات
   try {
     final notificationService = NotificationService();
@@ -24,7 +24,7 @@ void main() async {
   } catch (e) {
     debugPrint('Notification initialization failed: $e');
   }
-  
+
   /// تحديد نوع مستودع البيانات (MealRepository)
   /// إذا كان استخدام Firestore مفعلًا، سيتم الاتصال بـ Firebase
   /// وإلا سيتم استخدام ذاكرة مؤقتة (InMemory) للتجربة المحلية
@@ -78,5 +78,3 @@ class FoodDiaryApp extends StatelessWidget {
     );
   }
 }
-
-
