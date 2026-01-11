@@ -7,6 +7,8 @@ import '../services/auth_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService;
+
+  // الحاله الابتدائيه ان مش مسجل دخولل
   bool _isAuthenticated = false;
 
   AuthProvider({AuthService? authService})
@@ -17,12 +19,13 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
+  // يرجع ترو لو المستخدم مسجل دخوله
   bool get isAuthenticated => _isAuthenticated;
 
+  // يرجع اسم المستخدم
   String get userName {
     final user = _authService.currentUser;
     if (user == null || user.email == null) return 'Guest';
-    // Extract the part before @ and capitalize it
     final emailPart = user.email!.split('@')[0];
     if (emailPart.isEmpty) return 'User';
     return emailPart[0].toUpperCase() + emailPart.substring(1);
@@ -30,9 +33,12 @@ class AuthProvider extends ChangeNotifier {
 
   String get userEmail => _authService.currentUser?.email ?? '';
 
+  // يسجل الدخول
   Future<void> signIn(String email, String password) =>
       _authService.signInWithEmailAndPassword(email, password);
+  // يسجل الخروج
   Future<void> register(String email, String password) =>
       _authService.registerWithEmailAndPassword(email, password);
+  // يسجل الخروج
   Future<void> signOut() => _authService.signOut();
 }

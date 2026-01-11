@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class EmptyState extends StatelessWidget {
   final String message;
   final IconData icon;
+  // الودجت هذي لما تقعد الصفحه فاضيه شن يطلع 
 
   const EmptyState({
     super.key,

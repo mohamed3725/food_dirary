@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+// الودجت هذي مسؤول عن عرض تكست  جاهز
 class CustomTextField extends StatelessWidget {
   final String label;
   final TextEditingController? controller;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
   final int maxLines;
+
 
   const CustomTextField({
     super.key,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _mode;
 
+  // الحاله الافتراضية للثيم
   ThemeProvider({ThemeMode initialMode = ThemeMode.system})
       : _mode = initialMode;
 
@@ -26,7 +27,7 @@ class ThemeProvider extends ChangeNotifier {
     _mode = ThemeMode.system;
     notifyListeners();
   }
-  // يحدد الحاله الافتراضية
+  // يحدد الحاله الافتراضية في جهازك 
 
   void toggle() {
     _mode = _mode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;

@@ -1,8 +1,5 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../models/meal.dart';
 import 'nutrition_row.dart';
 
@@ -12,7 +9,9 @@ class MealCard extends StatelessWidget {
 
   const MealCard({super.key, required this.meal, this.onTap});
 
+  // هذه دالة المشاركة، وظيفتها تاخذ بيانات الوجبة وترسلها لتطبيقات ثانية
   void _shareMeal() {
+    // هنا نجهز النص اللي بنشاركه، يحتوي على الاسم والوصف والسعرات
     final text = 'Check out my meal on Food Diary! 🥗\n'
         'Meal: ${meal.name}\n'
         '${meal.description?.isNotEmpty == true ? 'About: ${meal.description}\n' : ''}'
@@ -22,6 +21,8 @@ class MealCard extends StatelessWidget {
         '🍞 Carbs: ${meal.carbs}g\n'
         '🥑 Fat: ${meal.fat}g\n\n'
         'Track your journey with Food Diary!';
+
+    // هذا السطر هو اللي يفتح قائمة المشاركة في الموبايل
     Share.share(text, subject: 'My Meal: ${meal.name}');
   }
 
@@ -52,8 +53,6 @@ class MealCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildMealImage(),
-                    const SizedBox(width: 16),
                     Expanded(child: _buildMealInfo(context)),
                     const SizedBox(width: 12),
                     _buildActions(context),
@@ -70,56 +69,6 @@ class MealCard extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildMealImage() {
-    final hasNetworkImage = meal.image != null && meal.image!.isNotEmpty;
-    final hasLocalImage = meal.localImagePath != null && meal.localImagePath!.isNotEmpty;
-
-    if (!hasNetworkImage && !hasLocalImage) {
-      return _buildImagePlaceholder();
-    }
-
-    Widget imageWidget;
-    if (kIsWeb) {
-      imageWidget = Image.network(
-        meal.image ?? meal.localImagePath!,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _buildImagePlaceholder(isError: true),
-      );
-    } else if (hasNetworkImage) {
-      imageWidget = CachedNetworkImage(
-        imageUrl: meal.image!,
-        fit: BoxFit.cover,
-        placeholder: (_, __) => _buildImagePlaceholder(),
-        errorWidget: (_, __, ___) => hasLocalImage
-            ? Image.file(File(meal.localImagePath!), fit: BoxFit.cover)
-            : _buildImagePlaceholder(isError: true),
-      );
-    } else {
-      imageWidget = Image.file(File(meal.localImagePath!), fit: BoxFit.cover);
-    }
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: SizedBox(
-        width: 80,
-        height: 80,
-        child: imageWidget,
-      ),
-    );
-  }
-
-  Widget _buildImagePlaceholder({bool isError = false}) {
-    return Container(
-      width: 80,
-      height: 80,
-      color: Colors.grey[200],
-      child: Icon(
-        isError ? Icons.error_outline : Icons.image_outlined,
-        color: Colors.grey[400],
       ),
     );
   }
