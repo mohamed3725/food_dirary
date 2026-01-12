@@ -1,44 +1,23 @@
-# Food Diary 🥗
+# Food Diary 
 
-A modern Flutter application designed to help users track their daily nutrition. Built with Material Design 3 and powered by Firebase.
+A modern Flutter application designed to help users track their daily nutrition. 
 
 ## Features
 
-### 🌟 Core Functionality
+### Core Functionality
 - **Real-time Synchronization**: Powered by Firestore for instant updates across devices.
 - **Authentication**: Secure Email/Password login and registration via Firebase Auth.
 - **CRUD Operations**: Add, View, Edit, and Delete meal entries with nutritional data.
 
-### ✨ Advanced Features (Week 3)
+### Advanced Features 
 - **Search & Filtering**: Quickly find meals by name or description.
 - **Meal Sharing**: Share your meals and nutrition facts with others via system share sheets.
-- **Image Support**: Upload meal photos to Firebase Storage with optimized caching.
-- **Data Portability**: Export and Import your meal data as JSON files.
 - **Dark/Light Mode**: Full Material 3 theme support with a dynamic theme toggle.
 
-### ⚡ Performance
+### Performance
 - **Lazy Loading**: Efficient list rendering using `ListView.builder`.
-- **Image Caching**: Uses `cached_network_image` to reduce data usage and improve speed.
 - **Optimistic UI**: Immediate UI updates for a snappy user experience.
 
-## Setup Instructions
-
-1. **Clone the repository**:
-   ```bash
-   git clone <repository-url>
-   ```
-2. **Install dependencies**:
-   ```bash
-   flutter pub get
-   ```
-3. **Firebase Configuration**:
-   - Create a Firebase project.
-   - Add Android/iOS apps and download `google-services.json` / `GoogleService-Info.plist`.
-   - Enable Firestore, Authentication, and Firebase Storage.
-4. **Run the app**:
-   ```bash
-   flutter run
-   ```
 
 ## Technical Decisions
 - **State Management**: `Provider` was chosen for its simplicity and robustness in handling auth and data streams.
