@@ -15,14 +15,14 @@ A modern Flutter application designed to help users track their daily nutrition.
 - **Dark/Light Mode**: Full Material 3 theme support with a dynamic theme toggle.
 
 ### Performance
-- **Lazy Loading**: Efficient list rendering using `ListView.builder`.
+
 - **Optimistic UI**: Immediate UI updates for a snappy user experience.
 
 
 ## Technical Decisions
 - **State Management**: `Provider` was chosen for its simplicity and robustness in handling auth and data streams.
 - **Design**: Material 3 was implemented to align with the latest Android/iOS design standards.
-- **Architecture**: Repository pattern was used to decouple the UI from the data source (Firestore).
+
 
 ---
 Developed as a Final Exam Project for Mobile Application Development, Fall 2025.
